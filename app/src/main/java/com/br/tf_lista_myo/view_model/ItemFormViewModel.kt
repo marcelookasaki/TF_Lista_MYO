@@ -20,7 +20,7 @@ class ItemFormViewModel(application: Application) : AndroidViewModel(application
     val saveItem: LiveData<Boolean> = mySaveItem
 
     fun save(item: String, bought: Boolean) {
-        val item = ItemModel(item, bought)
+        val item = ItemModel(item = item, bought = bought)
         myItemRepository.save(item)
 
     }

@@ -88,7 +88,20 @@ class ItemRepository private constructor(context: Context){
         }
     }
 
-    fun delete(item: ItemModel) {
+    fun delete(id: Int): Boolean {
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.writableDatabase
 
+            /* Cláusula Where */
+            val selection = DBConstants.ITEM.COLUMNS.ID + " = ?"
+            val args = arrayOf(id.toString())
+
+            /* Comando de delete */
+            db.delete(DBConstants.ITEM.TABLE_NAME, selection, args)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }
