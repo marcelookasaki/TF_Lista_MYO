@@ -37,6 +37,7 @@ class ItemRepository private constructor(context: Context){
             value.put(DBConstants.ITEM.COLUMNS.ITEM, item.item)
             value.put(DBConstants.ITEM.COLUMNS.BOUGHT, item.bought)
 
+            /* Comando de insert */
             db.insert(DBConstants.ITEM.TABLE_NAME, null, value)
             true
         } catch (e: Exception) {
@@ -65,8 +66,26 @@ class ItemRepository private constructor(context: Context){
 
     }
 
-    fun update(item: ItemModel) {
+    fun update(item: ItemModel): Boolean {
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.writableDatabase
 
+            /* Método para inserir valores */
+            val value = ContentValues()
+            value.put(DBConstants.ITEM.COLUMNS.ITEM, item.item)
+            value.put(DBConstants.ITEM.COLUMNS.BOUGHT, item.bought)
+
+            /* Cláusula Where */
+            val selection = DBConstants.ITEM.COLUMNS.ID + " = ?"
+            val args = arrayOf(item.id.toString())
+
+            /* Comando de update */
+            db.update(DBConstants.ITEM.TABLE_NAME, value, selection, args)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun delete(item: ItemModel) {
