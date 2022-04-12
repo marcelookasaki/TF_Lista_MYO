@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_list">
+
+    <fragment
+        android:id="@+id/nav_list"
+        android:name="com.br.tf_lista_myo.view.ListFragment"
+        android:label="@string/menu_list"
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_nav_list_to_nav_to_buy"
+            app:destination="@id/nav_to_buy" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_to_buy"
+        android:name="com.br.tf_lista_myo.view.ToBuyFragment"
+        android:label="@string/menu_to_buy"
+        tools:layout="@layout/fragment_tobuy" >
+        <action
+            android:id="@+id/action_nav_to_buy_to_nav_bought"
+            app:destination="@id/nav_bought" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_bought"
+        android:name="com.br.tf_lista_myo.view.BoughtFragment"
+        android:label="@string/menu_bought"
+        tools:layout="@layout/fragment_bought" />
+</navigation>
