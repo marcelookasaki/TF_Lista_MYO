@@ -1,6 +1,8 @@
 package com.br.tf_lista_myo.service.repo
 
+import android.content.ContentValues
 import android.content.Context
+import com.br.tf_lista_myo.service.constants.DBConstants
 import com.br.tf_lista_myo.service.model.ItemModel
 
 class ItemRepository private constructor(context: Context){
@@ -21,14 +23,25 @@ class ItemRepository private constructor(context: Context){
             if (!::repositorio.isInitialized ) {
                 repositorio = ItemRepository(context)
             }
-            return ItemRepository(context)
-
+            return repositorio
         }
-
     }
 
-    fun save(item: ItemModel) {
-        myItemDBHelper.writableDatabase
+    fun save(item: ItemModel): Boolean {
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.writableDatabase
+
+            /* Método para inserir valores */
+            val value = ContentValues()
+            value.put(DBConstants.ITEM.COLUMNS.ITEM, item.item)
+            value.put(DBConstants.ITEM.COLUMNS.BOUGHT, item.bought)
+
+            db.insert(DBConstants.ITEM.TABLE_NAME, null, value)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun getAll(): List<ItemModel> {
