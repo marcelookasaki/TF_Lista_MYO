@@ -1,5 +1,6 @@
 package com.br.tf_lista_myo.service.repo
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import com.br.tf_lista_myo.service.constants.DBConstants
@@ -42,6 +43,51 @@ class ItemRepository private constructor(context: Context){
             true
         } catch (e: Exception) {
             false
+        }
+    }
+
+    @SuppressLint("Range")
+    fun get(id: Int) : ItemModel? {
+
+        var item: ItemModel? = null
+
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.readableDatabase
+
+            /* Método para selecionar campos para retornar */
+            val columns = arrayOf(DBConstants.ITEM.COLUMNS.ITEM, DBConstants.ITEM.COLUMNS.BOUGHT)
+
+            /* Cláusula Where */
+            val selection = DBConstants.ITEM.COLUMNS.ID + " = ?"
+            val args = arrayOf(id.toString())
+
+            /* Comando de update */
+            val cursor = db.query(
+                DBConstants.ITEM.TABLE_NAME,
+                columns,
+                selection,
+                args,
+                null,
+                null,
+                null
+            )
+
+            if (cursor != null && cursor.count > 0) {
+                cursor.moveToFirst()
+
+                val itemdb = cursor.getString(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ITEM))
+                val boughtdb = (cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.BOUGHT)) == 1 )
+
+                item = ItemModel(id, itemdb, boughtdb)
+            }
+
+            /* Fecha o cursor */
+            cursor?.close()
+
+            item
+        } catch (e: Exception) {
+            item
         }
     }
 
