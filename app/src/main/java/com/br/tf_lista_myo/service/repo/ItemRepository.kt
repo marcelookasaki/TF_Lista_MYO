@@ -91,25 +91,112 @@ class ItemRepository private constructor(context: Context){
         }
     }
 
+    @SuppressLint("Range")
     fun getAll(): List<ItemModel> {
 
         val list : MutableList<ItemModel> = ArrayList()
-        return list
 
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.readableDatabase
+
+            /* Método para selecionar campos para retornar */
+            val columns = arrayOf(
+                DBConstants.ITEM.COLUMNS.ID,
+                DBConstants.ITEM.COLUMNS.ITEM,
+                DBConstants.ITEM.COLUMNS.BOUGHT
+            )
+
+            /* Comando de update */
+            val cursor = db.query(
+                DBConstants.ITEM.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()){
+                    val iddb = cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ID))
+                    val itemdb = cursor.getString(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ITEM))
+                    val boughtdb = (cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.BOUGHT)) == 1 )
+
+                    val item = ItemModel(iddb, itemdb, boughtdb)
+                    list.add(item)
+                }
+
+
+            }
+
+            /* Fecha o cursor */
+            cursor?.close()
+
+            list
+        } catch (e: Exception) {
+            list
+        }
     }
 
-    fun getToBuy(): List<ItemModel> {
-
-        val list : MutableList<ItemModel> = ArrayList()
-        return list
-
-    }
-
+    @SuppressLint("Range")
     fun getBought(): List<ItemModel> {
 
         val list : MutableList<ItemModel> = ArrayList()
-        return list
 
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.readableDatabase
+
+            val cursor = db.rawQuery("SELECT id, item, bought FROM Item WHERE bought = 1", null)
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()){
+                    val iddb = cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ID))
+                    val itemdb = cursor.getString(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ITEM))
+                    val boughtdb = (cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.BOUGHT)) == 1 )
+
+                    val item = ItemModel(iddb, itemdb, boughtdb)
+                    list.add(item)
+                }
+            }
+            /* Fecha o cursor */
+            cursor?.close()
+
+            list
+        } catch (e: Exception) {
+            list
+        }
+    }
+
+    @SuppressLint("Range")
+    fun getToBuy(): List<ItemModel> {
+
+        val list : MutableList<ItemModel> = ArrayList()
+        return try {
+            /* Conecta com a DB */
+            val db = myItemDBHelper.readableDatabase
+
+            val cursor = db.rawQuery("SELECT id, item, bought FROM Item WHERE bought = 0", null)
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()){
+                    val iddb = cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ID))
+                    val itemdb = cursor.getString(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.ITEM))
+                    val boughtdb = (cursor.getInt(cursor.getColumnIndex(DBConstants.ITEM.COLUMNS.BOUGHT)) == 1 )
+
+                    val item = ItemModel(iddb, itemdb, boughtdb)
+                    list.add(item)
+                }
+            }
+            /* Fecha o cursor */
+            cursor?.close()
+
+            list
+        } catch (e: Exception) {
+            list
+        }
     }
 
     fun update(item: ItemModel): Boolean {
